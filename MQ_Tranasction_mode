@@ -1,6 +1,152 @@
 Notes on Transaction Mode of MQ Input
 
 Introduction
+
+Transaction mode in MQ Input determines how messages are processed within a message flow.
+
+It affects message handling in case of failures or exceptions.
+
+The transaction property is found under Advanced settings in MQ Input properties.
+
+There are three transaction modes: Yes, No, and Automatic (Only Yes and No are covered in this video).
+
+
+Understanding Message Flow
+
+1. Basic Flow:
+
+A message is received on an input queue.
+
+Some transformation happens.
+
+The processed message is placed in the output queue.
+
+
+
+2. Error Scenario:
+
+If an exception occurs at any stage and remains unhandled, the transaction mode decides where the original message goes.
+
+
+
+
+
+---
+
+Transaction Mode: YES
+
+If Transaction Mode = YES, the system ensures message integrity.
+
+Handling Exceptions:
+
+1. If an exception occurs and is unhandled, the original message is moved to the Backout Queue (BOQ).
+
+
+2. If no Backout Queue is defined, it moves to the Dead Letter Queue (DLQ) at the Queue Manager level.
+
+
+3. If neither Backout Queue nor Dead Letter Queue exists, the message will enter an infinite loop, continuously searching for a valid queue.
+
+
+4. This may cause execution problems in the Execution Group.
+
+
+
+Demonstration:
+
+A wrong data source name is deliberately set to cause an error.
+
+After executing the message flow:
+
+No message is found in the output queue.
+
+If BOQ is defined, the message is found in the Backout Queue.
+
+If BOQ is not defined, the message goes to Dead Letter Queue.
+
+If neither exists, the message keeps searching indefinitely.
+
+
+Configuring the Queue in the Middle:
+
+If no BOQ or DLQ is defined initially, the message remains in an infinite search loop.
+
+If a queue is configured later, the message immediately moves to the newly created queue.
+
+This happens because the system is continuously searching for a valid queue.
+
+Example:
+
+Initially, no Backout Queue or Dead Letter Queue is present.
+
+The message keeps searching.
+
+After defining a Backout Queue, the message immediately moves to it.
+
+
+
+
+
+
+---
+
+Transaction Mode: NO
+
+If Transaction Mode = NO, there is no rollback mechanism.
+
+Handling Exceptions:
+
+If an exception occurs, the message is lost permanently.
+
+It does not go to a Backout Queue or Dead Letter Queue.
+
+The system does not attempt to recover the message.
+
+
+Demonstration:
+
+Transaction Mode is set to No.
+
+An error is induced by providing an incorrect data source name.
+
+Result: The message is not found anywhere (BOQ & DLQ are empty).
+
+Conclusion: In Transaction Mode = NO, the message is always lost in case of an error.
+
+
+
+
+---
+
+Summary
+
+Automatic Mode is not covered in this video and will be discussed in the next part.
+
+
+
+---
+
+Key Takeaways
+
+1. Transaction Mode = YES ensures message integrity by retrying or storing failed messages.
+
+
+2. Transaction Mode = NO does not retain failed messages.
+
+
+3. Backout Queue and Dead Letter Queue should be properly configured to avoid infinite loops.
+
+
+4. If no queues are defined, a looping issue may occur, affecting system performance.
+
+
+5. If a Backout Queue or Dead Letter Queue is configured later, the message immediately moves to it since it was continuously searching for a valid queue.
+
+
+
+Notes on Transaction Mode of MQ Input
+
+Introduction
 Transaction mode in MQ Input determines how messages are processed within a message flow.
 It affects message handling in case of failures or exceptions.
 The transaction property is found under Advanced settings in MQ Input properties.
