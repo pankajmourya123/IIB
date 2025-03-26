@@ -1,83 +1,40 @@
 Notes on Transaction Mode of MQ Input
 
 Introduction
-
 Transaction mode in MQ Input determines how messages are processed within a message flow.
-
 It affects message handling in case of failures or exceptions.
-
 The transaction property is found under Advanced settings in MQ Input properties.
-
 There are three transaction modes: Yes, No, and Automatic (Only Yes and No are covered in this video).
 
-
 Understanding Message Flow
-
 1. Basic Flow:
-
 A message is received on an input queue.
-
 Some transformation happens.
-
 The processed message is placed in the output queue.
 
-
-
 2. Error Scenario:
-
 If an exception occurs at any stage and remains unhandled, the transaction mode decides where the original message goes.
-
-
-
-
-
----
-
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 Transaction Mode: YES
-
 If Transaction Mode = YES, the system ensures message integrity.
-
 Handling Exceptions:
-
 1. If an exception occurs and is unhandled, the original message is moved to the Backout Queue (BOQ).
-
-
 2. If no Backout Queue is defined, it moves to the Dead Letter Queue (DLQ) at the Queue Manager level.
-
-
 3. If neither Backout Queue nor Dead Letter Queue exists, the message will enter an infinite loop, continuously searching for a valid queue.
-
-
 4. This may cause execution problems in the Execution Group.
 
-
-
 Demonstration:
-
 A wrong data source name is deliberately set to cause an error.
-
 After executing the message flow:
-
 No message is found in the output queue.
-
 If BOQ is defined, the message is found in the Backout Queue.
-
 If BOQ is not defined, the message goes to Dead Letter Queue.
-
 If neither exists, the message keeps searching indefinitely.
 
-
-
 Solution:
-
 Define either a Backout Queue or Dead Letter Queue to prevent infinite loops.
-
 If a queue is defined while the message is looping, it will be placed in that queue immediately.
-
-
-
-
----
+------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Transaction Mode: NO
 
