@@ -161,11 +161,6 @@ Use No mode for faster execution, where partial processing is acceptable.
 In Automatic mode, persistence behavior depends on the input node.
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 
-4. Summary Example
-
-Conclusion:
-Transaction Mode: Yes ensures atomicity (all-or-nothing execution).
-Transaction Mode: No ensures performance (no rollback, partial execution allowed).
 
 
 
